@@ -7,6 +7,8 @@ import Content from './Content';
 import { useAuth } from '../../context/AuthenticationContext';
 import { SignInPage, SignUpPage, ForgotPasswordPage } from '../login';
 import NotFound from '../NotFound';
+import AddNewVehicle from '../AddVehicle';
+import AddUser from '../AddUser';
 
 interface LayoutProps {
   window?: Window;
@@ -41,6 +43,8 @@ const Layout = (props: LayoutProps) => {
             <Route path="/dashboard" element={<Content />} />
             <Route path="/vehicles" element={<Content />} />
             <Route path="/users" element={<Content />} />
+            <Route path="/add-vehicle" element={<AddNewVehicle />} />
+            <Route path="/add-user" element={<AddUser />} />
             // {userRole === 'admin' && <Route path="/users" element={<Content />} /> }
             <Route path="*" element={<NotFound />} />
           </Routes>

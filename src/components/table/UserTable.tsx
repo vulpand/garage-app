@@ -14,6 +14,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TextField from '@mui/material/TextField';
 import NoDataMessage from './NoDataMessage';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function createData(
     name: string,
@@ -101,22 +104,36 @@ const rows = [
 
 const UserTable = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
-  
+  const navigate = useNavigate();
+
   // Filter rows based on search term
   const filteredRows = rows.filter((row) =>
     row.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleAddUser = () => {
+    navigate('/add-user');
+  };
+
   return (
     <Box>
+      <Box display='flex' gap={3} sx={{ mb: 2 }}>
       <TextField
         label="Search"
         variant="outlined"
-        fullWidth
+        sx={{width: '80%'}}
         onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ mb: 2 }}
       />
-      
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<PersonAddIcon />}
+        sx={{width: '20%'}}
+        onClick={handleAddUser}
+      >
+        Add User
+      </Button>
+      </Box>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
         {filteredRows.length > 0 && 
