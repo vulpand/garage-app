@@ -1,6 +1,6 @@
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { NAVIGATION } from '../Navigation';
 import { demoTheme } from '../../theme/theme';
 import Content from './Content';
@@ -55,7 +55,7 @@ const Layout = (props: LayoutProps) => {
           <Route path="/" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="*" element={<NotFound />} /> 
+          <Route path="*" element={<Navigate to="/" replace />}/> 
         </Routes>
       )}
     </AppProvider>

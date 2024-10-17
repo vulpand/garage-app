@@ -13,9 +13,13 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../../context/AuthenticationContext';
+import { UserCredentials } from '../../types';
+import { loginUser } from '../../api';
+import { useState } from 'react';
 
 function SignInPage() {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
   const { signInWithGoogle, signInWithFacebook, signIn } = useAuth();
 
   const validationSchema = Yup.object({
@@ -30,12 +34,27 @@ function SignInPage() {
     initialValues: {
       email: '',
       password: '',
-      rememberMe: false,
+      rememberMe: false,  // Add rememberMe to initialValues
     },
     validationSchema,
-    onSubmit: (values) => {
-      signIn({ email: values.email, role: 'user' });
-      navigate('/dashboard');
+    onSubmit: async (values) => {
+      try {
+        console.log('values', values)
+        const userData = await loginUser(values as UserCredentials);
+        signIn(userData);
+
+        // Store token based on rememberMe
+        if (values.rememberMe) {
+          localStorage.setItem('authToken', userData.token);  // Store in localStorage
+        } else {
+          sessionStorage.setItem('authToken', userData.token);  // Store in sessionStorage
+        }
+
+        navigate('/dashboard');
+      } catch (error) {
+        setErrorMessage('Invalid email or password');
+        console.error('Login error:', error);
+      }
     },
   });
 
@@ -52,13 +71,7 @@ function SignInPage() {
         <Typography component="h1" variant="h5">
           Sign In
         </Typography>
-
-        <Box
-          component="form"
-          onSubmit={formik.handleSubmit}
-          noValidate
-          sx={{ mt: 1 }}
-        >
+        <Box component="form" noValidate autoComplete="off" onSubmit={formik.handleSubmit}>
           <TextField
             margin="normal"
             required
@@ -87,6 +100,12 @@ function SignInPage() {
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
           />
+
+          {errorMessage && (
+            <Typography color="error" variant="body2">
+              {errorMessage}
+            </Typography>
+          )}
 
           <FormControlLabel
             control={
