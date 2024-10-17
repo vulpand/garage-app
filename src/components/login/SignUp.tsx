@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../../context/AuthenticationContext';
+import { registerUser } from '../../api';
+import { RegisterCredentials } from '../../types';
 
 function SignUpPage() {
   const navigate = useNavigate();
@@ -33,10 +35,15 @@ function SignUpPage() {
       password: '',
     },
     validationSchema,
-    onSubmit: (values) => {
-      // Simulated sign up process
-      signUp({ name: values.name, email: values.email, role: 'user' });
-      navigate('/dashboard');
+    onSubmit: async (values) => {
+      try {
+        console.log('values', values)
+        await registerUser(values as RegisterCredentials);
+
+        navigate('/');
+      } catch (error) {
+        console.error('Login error:', error);
+      }
     },
   });
 
@@ -115,7 +122,7 @@ function SignUpPage() {
             <Link
               component="button"
               variant="body2"
-              onClick={() => navigate('/sign-in')}
+              onClick={() => navigate('/')}
             >
               Already have an account? Sign in
             </Link>
