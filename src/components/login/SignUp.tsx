@@ -9,13 +9,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useAuth } from '../../context/AuthenticationContext';
+// import { useAuth } from '../../context/AuthenticationContext';
 import { registerUser } from '../../api';
 import { RegisterCredentials } from '../../types';
 
 function SignUpPage() {
   const navigate = useNavigate();
-  const { signUp } = useAuth();
+  // const { signUp } = useAuth();
 
   const validationSchema = Yup.object({
     name: Yup.string()

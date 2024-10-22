@@ -1,26 +1,26 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import PeopleIcon from '@mui/icons-material/People';
-// import BarChartIcon from '@mui/icons-material/BarChart';
-// import DescriptionIcon from '@mui/icons-material/Description';
-// import LayersIcon from '@mui/icons-material/Layers';
+import DescriptionIcon from '@mui/icons-material/Description';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+
 import { Navigation } from '../types/navigation';
 
 export const NAVIGATION: Navigation = [
   { segment: 'dashboard', title: 'Bord', icon: <DashboardIcon /> },
   { segment: 'vehicles', title: 'Vehicule', icon: <DirectionsCarIcon /> },
-  { segment: 'users', title: 'Clienti', icon: <PeopleIcon /> },
+  { segment: 'clients', title: 'Clienti', icon: <PeopleIcon /> },
   
-
-  // { kind: 'divider' },
-  // {
-  //   segment: 'reports',
-  //   title: 'Reports',
-  //   icon: <BarChartIcon />,
-  //   children: [
-  //     { segment: 'sales', title: 'Sales', icon: <DescriptionIcon /> },
-  //     { segment: 'traffic', title: 'Traffic', icon: <DescriptionIcon /> },
-  //   ],
-  // },
-  // { segment: 'integrations', title: 'Integrations', icon: <LayersIcon /> },
+  { kind: 'divider' },
+  {
+    segment: 'statement',
+    title: 'Statement',
+    icon: <AssessmentIcon />,
+    children: [
+      { segment: 'document', title: 'Document', icon: <DescriptionIcon /> },
+      { segment: 'invoice', title: 'Invoice', icon: <AttachMoneyIcon /> },
+    ],
+  },
 ];

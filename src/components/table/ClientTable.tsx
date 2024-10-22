@@ -17,28 +17,21 @@ import NoDataMessage from './NoDataMessage';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { getAllClients } from '../../api';
+import { useEffect, useState } from 'react';
+import { ClientCredentials } from '../../types';
 
 function createData(
     name: string,
     email: string,
     phoneNumber: number,
-    role?: string,
+    vehicles: { id: string }[]
 ) {
   return {
     name,
     email,
-    role,
     phoneNumber,
-    vehicles: [
-      {
-        licensePlate: 'CJ55FOR',
-        vinNumber: '11091700',
-      },
-      {
-        licensePlate: 'CJ77FOR',
-        vinNumber: '11091700',
-      },
-    ],
+    vehicles,
   };
 }
 
@@ -60,7 +53,6 @@ function Row(props: { row: ReturnType<typeof createData> }) {
         </TableCell>
         <TableCell component="th" scope="row">{row.name}</TableCell>
         <TableCell align="right">{row.email}</TableCell>
-        {/* <TableCell align="right">{row.role}</TableCell> */}
         <TableCell align="right">{row.phoneNumber}</TableCell>
       </TableRow>
       <TableRow>
@@ -70,7 +62,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
               <Typography variant="h6" gutterBottom component="div">
                 Vehicles
               </Typography>
-              <Table size="small" aria-label="purchases">
+              <Table size="small" aria-label="vehicles">
                 <TableHead>
                   <TableRow>
                     <TableCell>Plate number</TableCell>
@@ -79,11 +71,10 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                 </TableHead>
                 <TableBody>
                   {row.vehicles.map((vehicle) => (
-                    <TableRow key={vehicle.licensePlate}>
+                    <TableRow key={vehicle.id}>
                       <TableCell component="th" scope="row">
-                        {vehicle.licensePlate}
+                        {vehicle.id}
                       </TableCell>
-                      <TableCell>{vehicle.vinNumber}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -96,59 +87,74 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   );
 }
 
-const rows = [
-  createData('Igor Namer', '159', 24),
-  createData('Make Treser', '159', 24),
-  createData('Steven Loms', '159', 24),
-];
-
-const UserTable = () => {
-  const [searchTerm, setSearchTerm] = React.useState('');
+const ClientTable = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [clients, setClients] = useState<ClientCredentials[]>([]);
   const navigate = useNavigate();
 
-  // Filter rows based on search term
-  const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const clientData = await getAllClients();
+        setClients(clientData);
+      } catch (error) {
+        console.error('Error fetching clients:', error);
+      }
+    };
+    fetchClients();
+  }, []);
+
+  const filteredClients = clients.filter((client) =>
+    client.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddUser = () => {
-    navigate('/add-user');
+  const handleAddClient = () => {
+    navigate('/add-client');
   };
 
   return (
-    <Box>
+    <Box sx={{ p: 3 }}>
       <Box display='flex' gap={3} sx={{ mb: 2 }}>
-      <TextField
-        label="Search"
-        variant="outlined"
-        sx={{width: '80%'}}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<PersonAddIcon />}
-        sx={{width: '20%'}}
-        onClick={handleAddUser}
-      >
-        Add User
-      </Button>
+        <TextField
+          label="Search"
+          variant="outlined"
+          sx={{ width: '80%' }}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<PersonAddIcon />}
+          sx={{ width: '20%' }}
+          onClick={handleAddClient}
+        >
+          Add User
+        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
-        {filteredRows.length > 0 && 
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell align="left">Name</TableCell>
-              <TableCell align="right">Email</TableCell>
-              <TableCell align="right">Phone</TableCell>
-            </TableRow>
-          </TableHead>}
+          {filteredClients.length > 0 && (
+            <TableHead>
+              <TableRow>
+                <TableCell />
+                <TableCell align="left">Name</TableCell>
+                <TableCell align="right">Email</TableCell>
+                <TableCell align="right">Phone</TableCell>
+              </TableRow>
+            </TableHead>
+          )}
           <TableBody>
-            {filteredRows.length > 0 ? (
-              filteredRows.map((row) => (
-                <Row key={row.name} row={row} />
+            {filteredClients.length > 0 ? (
+              filteredClients.map((client) => (
+                <Row
+                  key={client.email}
+                  row={createData(
+                    client.name,
+                    client.email,
+                    client.phoneNumber,
+                    client.vehicles
+                  )}
+                />
               ))
             ) : (
               <TableRow>
@@ -164,4 +170,4 @@ const UserTable = () => {
   );
 };
 
-export default UserTable;
+export default ClientTable;

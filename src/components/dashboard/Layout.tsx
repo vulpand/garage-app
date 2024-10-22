@@ -3,12 +3,14 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { NAVIGATION } from '../Navigation';
 import { demoTheme } from '../../theme/theme';
-import Content from './Content';
 import { useAuth } from '../../context/AuthenticationContext';
 import { SignInPage, SignUpPage, ForgotPasswordPage } from '../login';
 import NotFound from '../NotFound';
-import AddNewVehicle from '../AddVehicle';
-import AddUser from '../AddUser';
+import AddVehicle from '../AddVehicle';
+import AddClient from '../AddClient';
+import InvoiceGenerator from '../statement/Invoice';
+import DocumentManager from '../statement/Document';
+import { BordTable, ClientTable, VehicleTable } from '../table';
 
 interface LayoutProps {
   window?: Window;
@@ -39,13 +41,15 @@ const Layout = (props: LayoutProps) => {
         //logged in
         <DashboardLayout>
           <Routes>
-          <Route path="/" element={<Content />} />
-            <Route path="/dashboard" element={<Content />} />
-            <Route path="/vehicles" element={<Content />} />
-            <Route path="/users" element={<Content />} />
-            <Route path="/add-vehicle" element={<AddNewVehicle />} />
-            <Route path="/add-user" element={<AddUser />} />
-            // {userRole === 'admin' && <Route path="/users" element={<Content />} /> }
+            <Route path="/"  element={<Navigate to="/dashboard" replace />}/>
+            <Route path="/dashboard" element={<BordTable />} />
+            <Route path="/vehicles" element={<VehicleTable />} />
+            <Route path="/clients" element={<ClientTable />} />
+            <Route path="/add-vehicle" element={<AddVehicle />} />
+            <Route path="/add-client" element={<AddClient />} />
+            <Route path="/statement/invoice" element={<InvoiceGenerator />} />
+            <Route path="/statement/document" element={<DocumentManager />} />
+            {/* {userRole === 'admin' && <Route path="/users" element={< />} /> } */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </DashboardLayout>

@@ -1,36 +1,44 @@
-import { Box, TextField, Button, Typography, Paper, MenuItem } from '@mui/material';
+import { Box, TextField, Button, Typography, Paper } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { ClientCredentials } from '../types';
+import { addClient } from '../api';
 
-const AddNewUser = () => {
+const AddClient = () => {
   const navigate = useNavigate();
 
   const initialValues ={
     name: '',
     email: '',
-    password: '',
-    role: '',
-    phoneNumber: '',
-    address: '',
+    phoneNumber: 0,
+    vehicles: []
   }
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Invalid email format').required('Email is required'),
-    password: Yup.string().required('Password is required'),
-    role: Yup.string().oneOf(['admin', 'mechanic', 'client'], 'Invalid role').required('Role is required'),
     phoneNumber: Yup.string(),
-    address: Yup.string(),
   });
 
-  const handleSubmit = (values: any) => {
-    // Submit logic goes here (e.g., API call)
-    console.log('Form Values:', values);
-    alert('User added successfully!');
+  const handleSubmit = async (values: ClientCredentials) => {
+    const { name, email, phoneNumber } = values;
 
-    // Navigate back to the vehicle table (or any other page)
-    navigate('/vehicles');
+    if (!name || !email || !phoneNumber) {
+      console.error('Missing required fields');
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    try {
+      console.log('Submitting Client Data:', values);
+      const response = await addClient(values);
+      console.log('Client added successfully:', response);
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to add client:', error);
+      alert('Failed to add client. Please try again.');
+    }
   };
 
   return (
@@ -72,36 +80,6 @@ const AddNewUser = () => {
               />
               <Field
                 as={TextField}
-                name="password"
-                label="Password"
-                fullWidth
-                type="password"
-                variant="outlined"
-                margin="normal"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={Boolean(touched.password && errors.password)}
-                helperText={touched.password && errors.password}
-              />
-              <Field
-                as={TextField}
-                name="role"
-                label="Role"
-                fullWidth
-                select
-                variant="outlined"
-                margin="normal"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={Boolean(touched.role && errors.role)}
-                helperText={touched.role && errors.role}
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="mechanic">Mechanic</MenuItem>
-                <MenuItem value="client">Client</MenuItem>
-              </Field>
-              <Field
-                as={TextField}
                 name="phoneNumber"
                 label="Phone Number"
                 fullWidth
@@ -112,21 +90,9 @@ const AddNewUser = () => {
                 error={Boolean(touched.phoneNumber && errors.phoneNumber)}
                 helperText={touched.phoneNumber && errors.phoneNumber}
               />
-              <Field
-                as={TextField}
-                name="address"
-                label="Address"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={Boolean(touched.address && errors.address)}
-                helperText={touched.address && errors.address}
-              />
 
               <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                  Add User
+                  Add Client
               </Button>
             </Form>
           )}
@@ -136,4 +102,4 @@ const AddNewUser = () => {
   );
 };
 
-export default AddNewUser;
+export default AddClient;

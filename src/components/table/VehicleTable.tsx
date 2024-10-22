@@ -1,6 +1,5 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import { Box, Paper, Button, TextField } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -9,43 +8,24 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import TablePagination from '@mui/material/TablePagination';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
+import { getAllVehicles, getVehicleDetails } from './../../api';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import { useEffect, useState } from 'react';
+import { VehicleCredentials } from '../../types';
+import NoDataMessage from './NoDataMessage';
 
-interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density' | 'details';
-  label: string;
-  minWidth?: number;
-  align?: 'right' | 'center';
-  format?: (value: number) => string;
-}
-
-const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 200,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size (km²)',
-    minWidth: 300,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 300,
-    align: 'right',
-    format: (value: number) => value.toFixed(2),
-  },
+const columns: readonly { id: keyof VehicleCredentials; label: string; minWidth?: number; align?: 'right' | 'center'; }[] = [
+  { id: 'licensePlate', label: 'License Plate', minWidth: 170 },
+  { id: 'brand', label: 'Brand', minWidth: 100 },
+  { id: 'model', label: 'Model', minWidth: 100 },
+  { id: 'year', label: 'Year', minWidth: 100, align: 'right' },
+  { id: 'mileage', label: 'Mileage (km)', minWidth: 150, align: 'right' },
+  { id: 'clientId', label: 'Client', minWidth: 100 },
   {
     id: 'details',
     label: 'Action',
@@ -54,52 +34,29 @@ const columns: readonly Column[] = [
   },
 ];
 
-interface Data {
-  name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
-  details?: string;
-}
-
-function createData(
-  name: string,
-  code: string,
-  population: number,
-  size: number,
-): Data {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
-
 const VehicleTable = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [cars, setCars] = useState<VehicleCredentials[]>([]);
+  const [open, setOpen] = useState(false);
+  const [repairHistory, setRepairHistory] = useState<any[]>([]);
   const navigate = useNavigate();
 
-  // Filter rows based on search term
-  const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const carData = await getAllVehicles();
+        setCars(carData);
+      } catch (error) {
+        console.error('Error fetching cars:', error);
+      }
+    };
+    fetchCars();
+  }, []);
+
+  const filteredVehicles = cars.filter((car) =>
+    car.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -111,8 +68,18 @@ const VehicleTable = () => {
     setPage(0);
   };
 
-  const handleButtonClick = (name: string) => {
-    alert(`Button clicked for ${name}`);
+  const handleButtonClick = async (licensePlate: string) => {
+    try {
+      const carDetails = await getVehicleDetails(licensePlate);
+      setRepairHistory(carDetails.repairHistory);
+      setOpen(true); 
+    } catch (error) {
+      console.error('Error fetching car details:', error);
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleAddVehicle = () => {
@@ -120,28 +87,28 @@ const VehicleTable = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ p: 3 }}>
       <Box display='flex' gap={3} sx={{ mb: 2 }}>
         <TextField
-          label="Search"
+          label="Search by License Plate"
           variant="outlined"
-          sx={{width: '80%'}}
+          sx={{ width: '80%' }}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            sx={{width: '20%'}}
-            onClick={handleAddVehicle}
-          >
-            Add Vehicle
-          </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          sx={{ width: '20%' }}
+          onClick={handleAddVehicle}
+        >
+          Add Vehicle
+        </Button>
       </Box>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
-            <TableHead>
+          {filteredVehicles.length > 0 && (<TableHead>
               <TableRow>
                 {columns.map((column) => (
                   <TableCell
@@ -153,13 +120,13 @@ const VehicleTable = () => {
                   </TableCell>
                 ))}
               </TableRow>
-            </TableHead>
+            </TableHead>)}
             <TableBody>
-              {filteredRows.length > 0 ? (
-                filteredRows
+              {filteredVehicles.length > 0 ? (
+                filteredVehicles
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.licensePlate}>
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
@@ -168,12 +135,10 @@ const VehicleTable = () => {
                               <Button
                                 variant="contained"
                                 color="info"
-                                onClick={() => handleButtonClick(row.name)}
+                                onClick={() => handleButtonClick(row.licensePlate)}
                               >
                                 Details
                               </Button>
-                            ) : column.format && typeof value === 'number' ? (
-                              column.format(value)
                             ) : (
                               value
                             )}
@@ -185,20 +150,18 @@ const VehicleTable = () => {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
-                    <Typography variant="body1" color="textSecondary">
-                      No data found
-                    </Typography>
+                    <NoDataMessage />
                   </TableCell>
-                </TableRow>
+              </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
-        {filteredRows.length > 0 && (
+        {filteredVehicles.length > 0 && (
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={filteredRows.length}
+            count={filteredVehicles.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -206,8 +169,29 @@ const VehicleTable = () => {
           />
         )}
       </Paper>
+
+      {/* Modal for displaying repair history */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Repair History</DialogTitle>
+        <DialogContent>
+          {repairHistory.length > 0 ? (
+            <Box>
+              {repairHistory.map((repair, index) => (
+                <Typography key={index}>{JSON.stringify(repair)}</Typography>
+              ))}
+            </Box>
+          ) : (
+            <Typography>No repair history available.</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
-}
+};
 
 export default VehicleTable;
