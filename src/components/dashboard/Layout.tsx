@@ -9,8 +9,7 @@ import NotFound from '../NotFound';
 import AddVehicle from '../AddVehicle';
 import AddClient from '../AddClient';
 import InvoiceGenerator from '../statement/Invoice';
-import DocumentManager from '../statement/Document';
-import { BordTable, ClientTable, VehicleTable } from '../table';
+import { BordTable, ClientTable, VehicleTable, DocumentTable } from '../table';
 
 interface LayoutProps {
   window?: Window;
@@ -48,7 +47,7 @@ const Layout = (props: LayoutProps) => {
             <Route path="/add-vehicle" element={<AddVehicle />} />
             <Route path="/add-client" element={<AddClient />} />
             <Route path="/statement/invoice" element={<InvoiceGenerator />} />
-            <Route path="/statement/document" element={<DocumentManager />} />
+            <Route path="/statement/document" element={<DocumentTable />} />
             {/* {userRole === 'admin' && <Route path="/users" element={< />} /> } */}
             <Route path="*" element={<NotFound />} />
           </Routes>

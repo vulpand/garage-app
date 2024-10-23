@@ -24,6 +24,8 @@ const logError = (error: unknown) => {
   }
 };
 
+// --------------------- Vehicles -----------------------------
+
 export const loginUser = async (credentials: UserCredentials) => {
   try {
     console.log('Credentials:', credentials);
@@ -47,6 +49,8 @@ export const registerUser = async (credentials: RegisterCredentials) => {
     throw error;
   }
 };
+
+// --------------------- Vehicles -----------------------------
 
 export const getAllVehicles = async () => {
   try {
@@ -73,6 +77,8 @@ export const addVehicle = async (vehicleData: VehicleCredentials) => {
   }
 };
 
+// --------------------- Clients -----------------------------
+
 export const getAllClients = async () => {
   try {
     const response = await axiosInstance.get('/clients');
@@ -86,6 +92,19 @@ export const getAllClients = async () => {
 export const addClient = async (clientData: ClientCredentials) => {
   try {
     const response = await axiosInstance.post('/clients', clientData);
+    return response.data;
+  } catch (error) {
+    logError(error);
+    throw error;
+  }
+};
+
+// --------------------- Appointment -----------------------------
+
+export const getAllAppointments = async () => {
+  try {
+    const response = await axiosInstance.get('/appointments');
+    console.log('response herere', response )
     return response.data;
   } catch (error) {
     logError(error);

@@ -38,25 +38,25 @@ const VehicleTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
-  const [cars, setCars] = useState<VehicleCredentials[]>([]);
+  const [vehicles, setvehicles] = useState<VehicleCredentials[]>([]);
   const [open, setOpen] = useState(false);
   const [repairHistory, setRepairHistory] = useState<any[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCars = async () => {
+    const fetchVehicles = async () => {
       try {
-        const carData = await getAllVehicles();
-        setCars(carData);
+        const vehicleData = await getAllVehicles();
+        setvehicles(vehicleData);
       } catch (error) {
         console.error('Error fetching cars:', error);
       }
     };
-    fetchCars();
+    fetchVehicles();
   }, []);
 
-  const filteredVehicles = cars.filter((car) =>
-    car.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredVehicles = vehicles.filter((vehicle) =>
+    vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleChangePage = (event: unknown, newPage: number) => {

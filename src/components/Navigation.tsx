@@ -3,10 +3,8 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import PeopleIcon from '@mui/icons-material/People';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-
-import { Navigation } from '../types/navigation';
+import { Navigation } from '../types';
 
 export const NAVIGATION: Navigation = [
   { segment: 'dashboard', title: 'Bord', icon: <DashboardIcon /> },
