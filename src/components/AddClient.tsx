@@ -8,7 +8,7 @@ import { addClient } from '../api';
 const AddClient = () => {
   const navigate = useNavigate();
 
-  const initialValues ={
+  const initialValues: ClientCredentials = {
     name: '',
     email: '',
     phoneNumber: 0,
@@ -22,13 +22,6 @@ const AddClient = () => {
   });
 
   const handleSubmit = async (values: ClientCredentials) => {
-    const { name, email, phoneNumber } = values;
-
-    if (!name || !email || !phoneNumber) {
-      console.error('Missing required fields');
-      alert('Please fill in all required fields.');
-      return;
-    }
 
     try {
       console.log('Submitting Client Data:', values);
@@ -44,7 +37,7 @@ const AddClient = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Add New User
+        Add New Client
       </Typography>
       <Paper sx={{ p: 3 }}>
         <Formik

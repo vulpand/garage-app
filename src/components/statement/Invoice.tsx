@@ -93,6 +93,7 @@ const InvoiceGenerator = () => {
                             variant="contained"
                             color="primary"
                             type="submit"
+                            size='small'
                             style={{ marginTop: '10px'}}
                         >
                             Generate Invoice
@@ -168,11 +169,12 @@ const InvoiceGenerator = () => {
                                     ))}
                                     <Box display="flex" alignItems="center" gap={10}>
                                         <Button 
-                                            variant="contained" 
+                                            variant="outlined" 
+                                            size='small'
                                             onClick={() => push({ description: '', quantity: 0, unitPrice: 0, totalPrice: 0 })}
                                             style={{ display: 'flex', alignItems: 'center' }}
                                         >
-                                            <AddIcon style={{ marginRight: '8px' }} />
+                                            <AddIcon fontSize='inherit' sx={{ mr: '8px' }} />
                                             Add Item
                                         </Button>
                                         <Box >

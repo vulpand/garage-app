@@ -14,18 +14,18 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TextField from '@mui/material/TextField';
 import NoDataMessage from './NoDataMessage';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getAllClients } from '../../api';
 import { useEffect, useState } from 'react';
 import { ClientCredentials } from '../../types';
+import AddIcon from '@mui/icons-material/Add';
 
 function createData(
     name: string,
     email: string,
     phoneNumber: number,
-    vehicles: { id: string }[]
+    vehicles: { id: string; licensePlate: string }[]
 ) {
   return {
     name,
@@ -41,7 +41,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow key={row.email} sx={{ '& > *': { borderBottom: 'unset' } }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -60,20 +60,14 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
-                Vehicles
+                License Plate Number
               </Typography>
               <Table size="small" aria-label="vehicles">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Plate number</TableCell>
-                    <TableCell>VIN number</TableCell>
-                  </TableRow>
-                </TableHead>
                 <TableBody>
                   {row.vehicles.map((vehicle) => (
                     <TableRow key={vehicle.id}>
                       <TableCell component="th" scope="row">
-                        {vehicle.id}
+                        {vehicle.licensePlate}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -114,25 +108,35 @@ const ClientTable = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box display='flex' gap={3} sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'stretch', md: 'center' },
+          mb: 2,
+        }}
+      >  
         <TextField
-          label="Search"
+          label="Search by name"
           variant="outlined"
-          sx={{ width: '80%' }}
+          size="small"
           onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: { xs: 2, md: 0 }, width: { xs: '100%', md: '60%', lg: '40%' } }}
         />
         <Button
           variant="contained"
           color="primary"
-          startIcon={<PersonAddIcon />}
-          sx={{ width: '20%' }}
+          size='small'
+          startIcon={<AddIcon />}
+          sx={{ width: { xs: '100%', md: '30%', lg: '20%'  } }}
           onClick={handleAddClient}
         >
-          Add User
+          Client
         </Button>
       </Box>
       <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
           {filteredClients.length > 0 && (
             <TableHead>
               <TableRow>

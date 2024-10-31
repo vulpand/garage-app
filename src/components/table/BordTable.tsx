@@ -6,13 +6,15 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Box, Paper, TableSortLabel, IconButton } from '@mui/material';
+import { Box, Paper, TableSortLabel, IconButton, TextField, Button } from '@mui/material';
 import PhoneIcon from '@mui/icons-material/Phone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
+import AddIcon from '@mui/icons-material/Add';
 import { AppointmentCredentials } from '../../types';
 import { getAllAppointments } from '../../api';
 import NoDataMessage from './NoDataMessage';
+import { useNavigate } from 'react-router-dom';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -42,6 +44,8 @@ const BordTable = () => {
   const [appointments, setAppointments] = useState<AppointmentCredentials[]>([]);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [sortField, setSortField] = useState<SortField>('date');
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -64,22 +68,63 @@ const BordTable = () => {
     return 0;
   });
 
+  const filteredAppointments = sortedAppointments.filter((appointment) =>
+    appointment.vehicle.licensePlate.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleSort = (field: SortField) => {
     const isSameField = sortField === field;
     setSortDirection(isSameField && sortDirection === 'asc' ? 'desc' : 'asc');
     setSortField(field);
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleAddAppointment = () => {
+    navigate('/add-appointment');
+  };
+
   return (
     <Box sx={{ p: 3 }}>
-      <TableContainer component={Paper}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'stretch', md: 'center' },
+          mb: 2,
+        }}
+      >
+        <TextField
+          label="Search by Vehicle"
+          variant="outlined"
+          size="small"
+          value={searchQuery}
+          onChange={handleSearch}
+          sx={{ mb: { xs: 2, md: 0 }, width: { xs: '100%', md: '60%', lg: '40%' } }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<AddIcon />}
+          sx={{ width: { xs: '100%', md: '30%', lg: '20%'  } }}
+          onClick={handleAddAppointment}
+        >
+          Appointment
+        </Button>
+      </Box>
+
+      <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          {sortedAppointments.length > 0 && (
+          {filteredAppointments.length > 0 && (
             <TableHead>
               <TableRow>
                 <TableCell>Client</TableCell>
                 <TableCell>Vehicle</TableCell>
-                <TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                   <TableSortLabel
                     active={sortField === 'date'}
                     direction={sortField === 'date' ? sortDirection : 'asc'}
@@ -88,7 +133,7 @@ const BordTable = () => {
                     Date & Time
                   </TableSortLabel>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                   <TableSortLabel
                     active={sortField === 'serviceType'}
                     direction={sortField === 'serviceType' ? sortDirection : 'asc'}
@@ -97,7 +142,7 @@ const BordTable = () => {
                     Service Type
                   </TableSortLabel>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                   <TableSortLabel
                     active={sortField === 'status'}
                     direction={sortField === 'status' ? sortDirection : 'asc'}
@@ -106,21 +151,25 @@ const BordTable = () => {
                     Status
                   </TableSortLabel>
                 </TableCell>
-                <TableCell>Action</TableCell> {/* New Action column */}
+                <TableCell>Action</TableCell> {/* Action column always visible */}
               </TableRow>
             </TableHead>
           )}
           <TableBody>
-            {sortedAppointments.length > 0 ? (
-              sortedAppointments.map((appointment) => (
+            {filteredAppointments.length > 0 ? (
+              filteredAppointments.map((appointment) => (
                 <StyledTableRow key={appointment._id}>
                   <TableCell component="th" scope="row">
                     {appointment.client.name}
                   </TableCell>
                   <TableCell>{appointment.vehicle.licensePlate}</TableCell>
-                  <TableCell>{new Date(appointment.dateTime).toLocaleString()}</TableCell>
-                  <TableCell>{appointment.serviceType}</TableCell>
-                  <TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                    {new Date(appointment.dateTime).toLocaleString()}
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                    {appointment.serviceType}
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                     <span
                       style={{
                         display: 'inline-block',
@@ -133,7 +182,6 @@ const BordTable = () => {
                     ></span>
                     {appointment.status}
                   </TableCell>
-                  {/* Action Buttons: Phone, WhatsApp, Email */}
                   <TableCell>
                     <IconButton
                       size="small"

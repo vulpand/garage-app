@@ -43,12 +43,12 @@ const DocumentTable = () => {
         file: Yup.mixed().required('File is required'),
     });
 
-    // Filtered documents based on search term
+    // Filter documents based on search term
     const filteredDocs = documents.filter((doc) =>
         doc.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Handle modal close for adding and deleting
+    // Close modal for adding and deleting
     const handleModalClose = () => setModalOpen(false);
     const handleDeleteModalClose = () => setDeleteModalOpen(false);
 
@@ -63,7 +63,7 @@ const DocumentTable = () => {
         handleModalClose();
     };
 
-    // Sort documents by column
+    // Sort documents
     const handleSort = (property: keyof DocumentCredentioals) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -81,13 +81,12 @@ const DocumentTable = () => {
         setDocuments(sortedDocuments);
     };
 
-    // Handle delete confirmation modal open
+    // Delete document
     const handleDeleteClick = (doc: DocumentCredentioals) => {
         setDocToDelete(doc);
         setDeleteModalOpen(true);
     };
 
-    // Handle actual document deletion
     const handleDeleteConfirm = () => {
         if (docToDelete) {
             setDocuments(documents.filter((doc) => doc.id !== docToDelete.id));
@@ -95,37 +94,46 @@ const DocumentTable = () => {
         }
     };
 
-    // Function to handle view action (placeholder)
     const handleViewDocument = (doc: DocumentCredentioals) => {
         alert(`Viewing ${doc.name}`); // Replace with actual logic
     };
 
-    // Function to handle download action (placeholder)
     const handleDownloadDocument = (doc: DocumentCredentioals) => {
         alert(`Downloading ${doc.name}`); // Replace with actual logic
     };
 
     return (
         <Box sx={{ p: 3 }}>
-            <Box display="flex" gap={3} sx={{ mb: 2 }}>
+            <Box
+                sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                justifyContent: 'space-between',
+                alignItems: { xs: 'stretch', md: 'center' },
+                mb: 2,
+                }}
+            >    
                 <TextField
-                    label="Search"
+                    label="Search by doc name"
                     variant="outlined"
-                    sx={{ width: '80%' }}
+                    size="small"
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    sx={{ mb: { xs: 2, md: 0 }, width: { xs: '100%', md: '60%', lg: '40%' } }}
                 />
                 <Button
                     variant="contained"
                     color="primary"
+                    size='small'
                     startIcon={<AddIcon />}
-                    sx={{ width: '20%' }}
+                    sx={{ width: { xs: '100%', md: '30%', lg: '20%'  } }}
                     onClick={() => setModalOpen(true)}
-                >
-                    Add Document
+                    >
+                    Document
                 </Button>
             </Box>
-            <TableContainer component={Paper} sx={{ mt: 3 }}>
-                <Table>
+
+            <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+                <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
                             <TableCell>
@@ -155,14 +163,22 @@ const DocumentTable = () => {
                                 <TableCell>{doc.name}</TableCell>
                                 <TableCell>{doc.uploadDate}</TableCell>
                                 <TableCell>
-                                    <IconButton onClick={() => handleViewDocument(doc)}>
-                                        <VisibilityIcon />
+                                    <IconButton size="small" onClick={() => handleViewDocument(doc)}>
+                                        <VisibilityIcon fontSize="inherit" />
                                     </IconButton>
-                                    <IconButton onClick={() => handleDownloadDocument(doc)}>
-                                        <DownloadIcon />
+                                    <IconButton
+                                        size="small"
+                                        sx={{ ml: { xs: 1, md: 3 } }} // Smaller margin on mobile
+                                        onClick={() => handleDownloadDocument(doc)}
+                                    >
+                                        <DownloadIcon fontSize="inherit" />
                                     </IconButton>
-                                    <IconButton onClick={() => handleDeleteClick(doc)}>
-                                        <DeleteIcon />
+                                    <IconButton
+                                        size="small"
+                                        sx={{ ml: { xs: 1, md: 3 } }} // Smaller margin on mobile
+                                        onClick={() => handleDeleteClick(doc)}
+                                    >
+                                        <DeleteIcon fontSize="inherit" />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
@@ -184,7 +200,7 @@ const DocumentTable = () => {
                 itemName={docToDelete?.name}
                 confirmButtonText="Delete"
                 cancelButtonText="Cancel"
-             />
+            />
         </Box>
     );
 };

@@ -1,33 +1,20 @@
-import React from 'react';
 import { Snackbar, Alert } from '@mui/material';
+import { useEffect } from 'react';
+import { ToastCredentials } from '../types';
 
-interface ToastProps {
-    open: boolean;
-    message: string;
-    severity?: 'error' | 'warning' | 'info' | 'success';
-    duration?: number;
-    onClose: () => void;
-}
+const Toast = ({ message, severity, duration = 3000, onClose }: ToastCredentials) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, duration);
+    return () => clearTimeout(timer);
+  }, [duration, onClose]);
 
-const Toast = ({
-    open,
-    message,
-    severity = 'info',
-    duration = 3000,
-    onClose,
-}: ToastProps) => {
-    return (
-        <Snackbar
-            open={open}
-            autoHideDuration={duration}
-            onClose={onClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-            <Alert onClose={onClose} severity={severity} variant="filled">
-                {message}
-            </Alert>
-        </Snackbar>
-    );
+  return (
+    <Snackbar open={!!message} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} onClose={onClose}>
+      <Alert severity={severity} variant="filled" onClose={onClose}>
+        {message}
+      </Alert>
+    </Snackbar>
+  );
 };
 
 export default Toast;

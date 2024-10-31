@@ -35,19 +35,21 @@ export interface AppointmentCredentials {
 }
 
 export interface ClientCredentials {
+  _id?: string;
   name: string;
   email: string;
   phoneNumber: number;
-  vehicles: {id: string}[];
+  vehicles: {id: string; licensePlate: string}[];
 }
 
 export interface VehicleCredentials {
-  licensePlate: string,
-  brand: string,
-  model: string,
-  year: number,
-  mileage: number,
-  clientId: string,
+  _id?: string;
+  licensePlate: string;
+  brand: string;
+  model: string;
+  year: number;
+  mileage: number;
+  client: {id: string; name: string};
   repairHistory: Array<any>;
   details?: string;
 }
@@ -81,4 +83,11 @@ export interface AddDocumentModalCredentioals {
   open: boolean;
   onClose: () => void;
   onSubmit: (values: { documentName: string; file: File | null }) => void;
+}
+
+export interface ToastCredentials {
+  message: string;
+  severity: 'success' | 'error' | 'info' | 'warning';
+  duration?: number;
+  onClose: () => void;
 }

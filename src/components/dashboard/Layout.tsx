@@ -10,6 +10,7 @@ import AddVehicle from '../AddVehicle';
 import AddClient from '../AddClient';
 import InvoiceGenerator from '../statement/Invoice';
 import { BordTable, ClientTable, VehicleTable, DocumentTable } from '../table';
+import AddAppointment from '../AddAppointment';
 
 interface LayoutProps {
   window?: Window;
@@ -44,6 +45,7 @@ const Layout = (props: LayoutProps) => {
             <Route path="/dashboard" element={<BordTable />} />
             <Route path="/vehicles" element={<VehicleTable />} />
             <Route path="/clients" element={<ClientTable />} />
+            <Route path="/add-appointment" element={<AddAppointment />} />
             <Route path="/add-vehicle" element={<AddVehicle />} />
             <Route path="/add-client" element={<AddClient />} />
             <Route path="/statement/invoice" element={<InvoiceGenerator />} />

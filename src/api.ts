@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UserCredentials, RegisterCredentials, VehicleCredentials, ClientCredentials } from './types';
+import { UserCredentials, RegisterCredentials, VehicleCredentials, ClientCredentials, AppointmentCredentials } from './types';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:7000',
@@ -24,7 +24,7 @@ const logError = (error: unknown) => {
   }
 };
 
-// --------------------- Vehicles -----------------------------
+// --------------------- Authentication -----------------------------
 
 export const loginUser = async (credentials: UserCredentials) => {
   try {
@@ -105,6 +105,16 @@ export const getAllAppointments = async () => {
   try {
     const response = await axiosInstance.get('/appointments');
     console.log('response herere', response )
+    return response.data;
+  } catch (error) {
+    logError(error);
+    throw error;
+  }
+};
+
+export const addAppointment = async (appointmentData: AppointmentCredentials) => {
+  try {
+    const response = await axiosInstance.post('/appointments', appointmentData);
     return response.data;
   } catch (error) {
     logError(error);
