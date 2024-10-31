@@ -1,6 +1,6 @@
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { TextField, Button, Box, Typography, Paper, Autocomplete } from '@mui/material';
+import { TextField, Button, Box, Autocomplete } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { addVehicle, getAllClients } from './../api';
 import { ClientCredentials, VehicleCredentials } from '../types';
@@ -61,123 +61,129 @@ const AddVehicle = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+      <Box
+        sx={{
+          py: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          textAlign: 'center',
+          fontSize: 'larger',
+        }}
+      >
         Add New Vehicle
-      </Typography>
-      <Paper sx={{ p: 3 }}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ handleChange, handleBlur, touched, errors, setFieldValue, values }) => (
-            <Form>
-              <Box sx={{ mb: 2 }}>
-                <Field
-                  as={TextField}
-                  name="licensePlate"
-                  label="License Plate"
-                  fullWidth
-                  margin="normal"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={touched.licensePlate && errors.licensePlate ? errors.licensePlate : ""}
-                  error={touched.licensePlate && Boolean(errors.licensePlate)}
-                />
-              </Box>
+      </Box>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ handleChange, handleBlur, touched, errors, setFieldValue, values }) => (
+          <Form>
+            <Box sx={{ mb: 2 }}>
+              <Field
+                as={TextField}
+                name="licensePlate"
+                label="License Plate"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                helperText={touched.licensePlate && errors.licensePlate ? errors.licensePlate : ""}
+                error={touched.licensePlate && Boolean(errors.licensePlate)}
+              />
+            </Box>
 
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  gap: 2,
-                  mb: 2
-                }}
-              >
-                <Field
-                  as={TextField}
-                  name="brand"
-                  label="Brand"
-                  fullWidth
-                  margin="normal"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={touched.brand && errors.brand ? errors.brand : ""}
-                  error={touched.brand && Boolean(errors.brand)}
-                />
-                <Field
-                  as={TextField}
-                  name="model"
-                  label="Model"
-                  fullWidth
-                  margin="normal"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={touched.model && errors.model ? errors.model : ""}
-                  error={touched.model && Boolean(errors.model)}
-                />
-              </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2,
+                mb: 2
+              }}
+            >
+              <Field
+                as={TextField}
+                name="brand"
+                label="Brand"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                helperText={touched.brand && errors.brand ? errors.brand : ""}
+                error={touched.brand && Boolean(errors.brand)}
+              />
+              <Field
+                as={TextField}
+                name="model"
+                label="Model"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                helperText={touched.model && errors.model ? errors.model : ""}
+                error={touched.model && Boolean(errors.model)}
+              />
+            </Box>
 
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  gap: 2,
-                  mb: 2
-                }}
-              >
-                <Field
-                  as={TextField}
-                  name="year"
-                  label="Year"
-                  type="number"
-                  fullWidth
-                  margin="normal"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={touched.year && errors.year ? errors.year : ""}
-                  error={touched.year && Boolean(errors.year)}
-                />
-                <Field
-                  as={TextField}
-                  name="mileage"
-                  label="Mileage"
-                  type="number"
-                  fullWidth
-                  margin="normal"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={touched.mileage && errors.mileage ? errors.mileage : ""}
-                  error={touched.mileage && Boolean(errors.mileage)}
-                />
-              </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2,
+                mb: 2
+              }}
+            >
+              <Field
+                as={TextField}
+                name="year"
+                label="Year"
+                type="number"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                helperText={touched.year && errors.year ? errors.year : ""}
+                error={touched.year && Boolean(errors.year)}
+              />
+              <Field
+                as={TextField}
+                name="mileage"
+                label="Mileage"
+                type="number"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                helperText={touched.mileage && errors.mileage ? errors.mileage : ""}
+                error={touched.mileage && Boolean(errors.mileage)}
+              />
+            </Box>
 
-              {/* Client ID - Full Width */}
-              <Box sx={{ mb: 2 }}>
-                <Autocomplete
-                  options={clients}
-                  getOptionLabel={(option) => option.name}
-                  fullWidth
-                  onChange={(e, value) => setFieldValue('client', value?._id)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Client"
-                      margin="normal"
-                      // helperText={touched.client && errors.client ? errors.client : ""}
-                      error={touched.client && Boolean(errors.client)}
-                    />
-                  )}
-                />
-              </Box>
+            {/* Client ID - Full Width */}
+            <Box sx={{ mb: 2 }}>
+              <Autocomplete
+                options={clients}
+                getOptionLabel={(option) => option.name}
+                fullWidth
+                onChange={(e, value) => setFieldValue('client', value?._id)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Client"
+                    margin="normal"
+                    // helperText={touched.client && errors.client ? errors.client : ""}
+                    error={touched.client && Boolean(errors.client)}
+                  />
+                )}
+              />
+            </Box>
 
-              <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                Add Vehicle
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </Paper>
+            <Button type="submit" size="small" variant="contained" color="primary" sx={{ mt: 2 }}>
+              Add Vehicle
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Box>
   );
 };

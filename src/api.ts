@@ -104,7 +104,6 @@ export const addClient = async (clientData: ClientCredentials) => {
 export const getAllAppointments = async () => {
   try {
     const response = await axiosInstance.get('/appointments');
-    console.log('response herere', response )
     return response.data;
   } catch (error) {
     logError(error);

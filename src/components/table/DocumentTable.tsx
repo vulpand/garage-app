@@ -18,8 +18,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { AddDocumentModal, DeleteModal } from '../Modal';
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
 import { DocumentCredentioals } from '../../types';
+import NoDataMessage from './NoDataMessage';
 
 const initialDocuments: DocumentCredentioals[] = [
     { id: 1, name: 'Document1.pdf', uploadDate: '2024-01-01' },
@@ -38,10 +39,10 @@ const DocumentTable = () => {
     const [orderBy, setOrderBy] = useState<keyof DocumentCredentioals>('name');
 
     // Validation schema for adding a document
-    const validationSchema = Yup.object().shape({
-        documentName: Yup.string().required('Document name is required'),
-        file: Yup.mixed().required('File is required'),
-    });
+    // const validationSchema = Yup.object().shape({
+    //     documentName: Yup.string().required('Document name is required'),
+    //     file: Yup.mixed().required('File is required'),
+    // });
 
     // Filter documents based on search term
     const filteredDocs = documents.filter((doc) =>
@@ -134,7 +135,7 @@ const DocumentTable = () => {
 
             <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    <TableHead>
+                {filteredDocs.length > 0 && (<TableHead>
                         <TableRow>
                             <TableCell>
                                 <TableSortLabel
@@ -156,33 +157,40 @@ const DocumentTable = () => {
                             </TableCell>
                             <TableCell>Actions</TableCell> {/* New column for actions */}
                         </TableRow>
-                    </TableHead>
+                    </TableHead>)}
                     <TableBody>
-                        {filteredDocs.map((doc) => (
-                            <TableRow key={doc.id}>
-                                <TableCell>{doc.name}</TableCell>
-                                <TableCell>{doc.uploadDate}</TableCell>
-                                <TableCell>
-                                    <IconButton size="small" onClick={() => handleViewDocument(doc)}>
-                                        <VisibilityIcon fontSize="inherit" />
-                                    </IconButton>
-                                    <IconButton
-                                        size="small"
-                                        sx={{ ml: { xs: 1, md: 3 } }} // Smaller margin on mobile
-                                        onClick={() => handleDownloadDocument(doc)}
-                                    >
-                                        <DownloadIcon fontSize="inherit" />
-                                    </IconButton>
-                                    <IconButton
-                                        size="small"
-                                        sx={{ ml: { xs: 1, md: 3 } }} // Smaller margin on mobile
-                                        onClick={() => handleDeleteClick(doc)}
-                                    >
-                                        <DeleteIcon fontSize="inherit" />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                    {filteredDocs.length > 0 ? (
+                    filteredDocs.map((doc) => (
+                        <TableRow key={doc.id}>
+                            <TableCell>{doc.name}</TableCell>
+                            <TableCell>{doc.uploadDate}</TableCell>
+                            <TableCell>
+                                <IconButton size="small" onClick={() => handleViewDocument(doc)}>
+                                    <VisibilityIcon fontSize="inherit" />
+                                </IconButton>
+                                <IconButton
+                                    size="small"
+                                    sx={{ ml: { xs: 1, md: 3 } }} // Smaller margin on mobile
+                                    onClick={() => handleDownloadDocument(doc)}
+                                >
+                                    <DownloadIcon fontSize="inherit" />
+                                </IconButton>
+                                <IconButton
+                                    size="small"
+                                    sx={{ ml: { xs: 1, md: 3 } }} // Smaller margin on mobile
+                                    onClick={() => handleDeleteClick(doc)}
+                                >
+                                    <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
+                        ))): (
+                        <TableRow>
+                            <TableCell colSpan={6} align="center">
+                            <NoDataMessage />
+                            </TableCell>
+                        </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

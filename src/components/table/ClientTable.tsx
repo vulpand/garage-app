@@ -20,12 +20,16 @@ import { getAllClients } from '../../api';
 import { useEffect, useState } from 'react';
 import { ClientCredentials } from '../../types';
 import AddIcon from '@mui/icons-material/Add';
+import MailIcon from '@mui/icons-material/Mail';
+import PhoneIcon from '@mui/icons-material/Phone';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useToast } from '../context/ToastContext';
 
 function createData(
-    name: string,
-    email: string,
-    phoneNumber: number,
-    vehicles: { id: string; licensePlate: string }[]
+  name: string,
+  email: string,
+  phoneNumber: number,
+  vehicles: { id: string; licensePlate: string }[]
 ) {
   return {
     name,
@@ -37,7 +41,22 @@ function createData(
 
 function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const { showToast } = useToast();
+  const [open, setOpen] = useState(false);
+
+  const handleEmailClick = (email: string) => {
+    window.open(`mailto:${email}`);
+  };
+
+  const handlePhoneClick = (phone: string) => {
+    window.open(`tel:${phone}`);
+  };
+
+  const handleCopyClick = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(`${text} copied to clipboard!`, 'info');
+    });
+  };
 
   return (
     <React.Fragment>
@@ -52,8 +71,18 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">{row.name}</TableCell>
-        <TableCell align="right">{row.email}</TableCell>
-        <TableCell align="right">{row.phoneNumber}</TableCell>
+        <TableCell align="right">
+          <IconButton onClick={() => handleEmailClick(row.email)}>
+            <MailIcon />
+          </IconButton>
+          {row.email}
+        </TableCell>
+        <TableCell align="right">
+          <IconButton onClick={() => handlePhoneClick(row.phoneNumber.toString())}>
+            <PhoneIcon />
+          </IconButton>
+          {row.phoneNumber}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -67,6 +96,9 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                   {row.vehicles.map((vehicle) => (
                     <TableRow key={vehicle.id}>
                       <TableCell component="th" scope="row">
+                        <IconButton onClick={() => handleCopyClick(vehicle.licensePlate)}>
+                          <ContentCopyIcon />
+                        </IconButton>
                         {vehicle.licensePlate}
                       </TableCell>
                     </TableRow>
@@ -116,7 +148,7 @@ const ClientTable = () => {
           alignItems: { xs: 'stretch', md: 'center' },
           mb: 2,
         }}
-      >  
+      >
         <TextField
           label="Search by name"
           variant="outlined"
@@ -129,14 +161,14 @@ const ClientTable = () => {
           color="primary"
           size='small'
           startIcon={<AddIcon />}
-          sx={{ width: { xs: '100%', md: '30%', lg: '20%'  } }}
+          sx={{ width: { xs: '100%', md: '30%', lg: '20%' } }}
           onClick={handleAddClient}
         >
           Client
         </Button>
       </Box>
       <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
           {filteredClients.length > 0 && (
             <TableHead>
               <TableRow>

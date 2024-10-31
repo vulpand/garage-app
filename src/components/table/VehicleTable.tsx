@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, Grid } from '@mui/material';
+import { Box, Paper, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import { getAllVehicles, getVehicleDetails } from './../../api';
@@ -24,7 +24,7 @@ const VehicleTable = () => {
   const [open, setOpen] = useState(false);
   const [repairHistory, setRepairHistory] = useState<any[]>([]);
   const navigate = useNavigate();
-console.log('vehicles', vehicles)
+  
   useEffect(() => {
     const fetchVehicles = async () => {
       try {

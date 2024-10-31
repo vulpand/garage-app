@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { Box, TextField, Button } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -36,61 +36,67 @@ const AddClient = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+      <Box
+        sx={{
+          py: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          textAlign: 'center',
+          fontSize: 'larger',
+        }}
+      >
         Add New Client
-      </Typography>
-      <Paper sx={{ p: 3 }}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ handleChange, handleBlur, errors, touched }) => (
-            <Form>
-              <Field
-                as={TextField}
-                name="name"
-                label="Name"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={Boolean(touched.name && errors.name)}
-                helperText={touched.name && errors.name}
-              />
-              <Field
-                as={TextField}
-                name="email"
-                label="Email"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={Boolean(touched.email && errors.email)}
-                helperText={touched.email && errors.email}
-              />
-              <Field
-                as={TextField}
-                name="phoneNumber"
-                label="Phone Number"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={Boolean(touched.phoneNumber && errors.phoneNumber)}
-                helperText={touched.phoneNumber && errors.phoneNumber}
-              />
+      </Box>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ handleChange, handleBlur, errors, touched }) => (
+          <Form>
+            <Field
+              as={TextField}
+              name="name"
+              label="Name"
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={Boolean(touched.name && errors.name)}
+              helperText={touched.name && errors.name}
+            />
+            <Field
+              as={TextField}
+              name="email"
+              label="Email"
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={Boolean(touched.email && errors.email)}
+              helperText={touched.email && errors.email}
+            />
+            <Field
+              as={TextField}
+              name="phoneNumber"
+              label="Phone Number"
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={Boolean(touched.phoneNumber && errors.phoneNumber)}
+              helperText={touched.phoneNumber && errors.phoneNumber}
+            />
 
-              <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                  Add Client
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </Paper>
+            <Button type="submit" size='small' variant="contained" color="primary" sx={{ mt: 2 }}>
+                Add Client
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Box>
   );
 };

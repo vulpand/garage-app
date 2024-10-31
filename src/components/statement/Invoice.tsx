@@ -1,4 +1,4 @@
-import { Button, TextField, Box, Typography, IconButton, InputAdornment, Divider } from '@mui/material';
+import { Button, TextField, Box, IconButton, InputAdornment, Divider } from '@mui/material';
 import { Field, FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -31,7 +31,7 @@ const InvoiceGenerator = () => {
     };
 
     const handleSubmit = async (values: typeof initialValues) => {
-        const totalAmount = values.items.reduce((acc, item) => acc + item.totalPrice, 0);
+        // const totalAmount = values.items.reduce((acc, item) => acc + item.totalPrice, 0);
         const invoiceData = { 
             customerName: values.customerName,
             date: values.date,
