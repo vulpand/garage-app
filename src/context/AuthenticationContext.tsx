@@ -27,11 +27,10 @@ export const AuthenticationProvider: React.FC<{ children: React.ReactNode }> = (
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Check local storage for user credentials
     const storedUser = localStorage.getItem('session');
     if (storedUser) {
-      const user: User = JSON.parse(storedUser);
-      setSession({ user }); // Set session from local storage
+      const user = JSON.parse(storedUser);
+      setSession(user);
     }
   }, []);
 

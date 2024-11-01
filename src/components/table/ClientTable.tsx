@@ -87,7 +87,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
+            {row.vehicles.length > 0 ? (<Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
                 License Plate Number
               </Typography>
@@ -105,7 +105,11 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                   ))}
                 </TableBody>
               </Table>
-            </Box>
+            </Box>) : (
+              <Typography variant="body1" color="textSecondary">
+                No Vehicles added
+              </Typography>
+            )}
           </Collapse>
         </TableCell>
       </TableRow>

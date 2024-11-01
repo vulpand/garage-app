@@ -8,6 +8,19 @@ const axiosInstance = axios.create({
   },
 });
 
+axiosInstance.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token'); // Check if token exists
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`; // Attach the token
+    }
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
+
 const logError = (error: unknown) => {
   if (axios.isAxiosError(error)) {
     console.error('Axios error:', {
@@ -30,7 +43,8 @@ export const loginUser = async (credentials: UserCredentials) => {
   try {
     console.log('Credentials:', credentials);
     const response = await axiosInstance.post('/auth/login', credentials);
-    console.log('Response:', response);
+    localStorage.setItem('token', response.data.token);
+
     return response.data;
   } catch (error) {
     logError(error);

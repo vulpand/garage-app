@@ -34,20 +34,19 @@ function SignInPage() {
     initialValues: {
       email: '',
       password: '',
-      rememberMe: false,  // Add rememberMe to initialValues
+      rememberMe: false, 
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
-        console.log('values', values)
         const userData = await loginUser(values as UserCredentials);
-        signIn(userData);
+        signIn(userData.user);
 
         // Store token based on rememberMe
         if (values.rememberMe) {
-          localStorage.setItem('authToken', userData.token);  // Store in localStorage
+          localStorage.setItem('token', userData.token);
         } else {
-          sessionStorage.setItem('authToken', userData.token);  // Store in sessionStorage
+          sessionStorage.setItem('token', userData.token);
         }
 
         navigate('/dashboard');

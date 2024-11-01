@@ -18,7 +18,7 @@ interface LayoutProps {
 
 const Layout = (props: LayoutProps) => {
   const { session, signOut } = useAuth(); 
-  const userRole = session?.user?.role;
+  // const userRole = session?.user?.role;
   const navigate = useNavigate();
   const location = useLocation();
 
